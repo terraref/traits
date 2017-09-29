@@ -33,7 +33,7 @@ ncbi_byid <- function(ids, format=NULL, verbose=TRUE) {
   }
 
   xml_helper <- function(y, string) {
-    xml2::xml_text(xml2::xml_find_one(y, string))
+    xml2::xml_text(xml2::xml_find_first(y, string))
   }
 
   x <- paste(ids, collapse = ",")
@@ -56,5 +56,5 @@ ncbi_byid <- function(ids, format=NULL, verbose=TRUE) {
   })
 
   mssg(verbose, "...done")
-  data.frame(rbindlist(tmp))
+  data.frame(rbindlist(tmp), stringsAsFactors = FALSE)
 }
