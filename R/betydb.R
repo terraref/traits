@@ -162,6 +162,7 @@ betydb_search <- function(query = "Maple SLA", ..., include_unchecked = NULL){
 betydb_GET <- function(url, args = list(), key = NULL, user = NULL, pwd = NULL, which, ...){
 
   api_version <- getOption('betydb_api_version', default = 'v0')
+  key <- getOption('betydb_key', default = "9999999999999999999999999999999999999999")
 
   # Mostly for testing, will probably have default value in ~all normal use
   per_call_limit <- getOption('per_call_limit', default = 5000)
@@ -170,7 +171,7 @@ betydb_GET <- function(url, args = list(), key = NULL, user = NULL, pwd = NULL, 
   if(api_version == 'v0'){
     txt <- betydb_http(url, args, key, user, pwd, ...)
     lst <- jsonlite::fromJSON(txt, simplifyVector = TRUE, flatten = TRUE)
-  } else if (api_version == 'beta'){
+  } else if (api_version %in% c('beta', 'v1')){
 
     if(is.null(args$limit)) {
       args$limit <- 200
@@ -301,12 +302,12 @@ betydb_http <- function(url, args = list(), key = NULL, user = NULL, pwd = NULL,
     args <- append(args, includes)
   }
   res <- if (is.null(auth$key)) {
-    GET(url, query = args, authenticate(auth$user, auth$pwd), ...)
+    httr::GET(url, query = args, authenticate(auth$user, auth$pwd), ...)
   } else {
-    GET(url, query = c(key = auth$key, args), ...)
+    httr::GET(url, query = c(key = auth$key, args), ...)
   }
-  stop_for_status(res)
-  ans <- content(res, "text", encoding = "UTF-8")
+  httr::stop_for_status(res)
+  ans <- httr::content(res, "text", encoding = "UTF-8")
   return(ans)
 }
 
