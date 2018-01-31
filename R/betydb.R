@@ -115,6 +115,7 @@ makepropname <- function(name, api_version){
 #' Default is \code{options("betydb_url")} if set, otherwise "https:/www.betydb.org/"
 #' @param user,pwd (character) A user name and password. Use a user/pwd combo or an API key.
 #' Save in your \code{.Rprofile} file as \code{options(betydb_user = "yournamehere")} and \code{options(betydb_pwd = "yourpasswordhere")}. Optional
+#' @param include_unchecked (string) can be 'true' (default) or 'false'. Return results that have not been reviewed?
 #'
 #' @return A data.frame with attributes containing request metadata, or NULL if the query produced no results
 #'
@@ -146,17 +147,17 @@ makepropname <- function(name, api_version){
 #' # [1] "Miscanthus"
 #' }
 #'
-betydb_query <- function(..., table = "search", key = NULL, api_version = NULL, betyurl = NULL, user = NULL, pwd = NULL){
+betydb_query <- function(..., table = "search", key = NULL, api_version = NULL, betyurl = NULL, user = NULL, pwd = NULL, include_unchecked = NULL){
 
   url <- makeurl(table = table, fmt = "json", api_version = api_version, betyurl = betyurl)
   propname <- makepropname(table, api_version)
-  betydb_GET(url, args = list(...), key = key, user = NULL, pwd = NULL, which = propname)
+  betydb_GET(url, args = list(...), key = key, include_unchecked = include_unchecked, user = NULL, pwd = NULL, which = propname)
 }
 
 #' @export
 #' @rdname betydb_query
-betydb_search <- function(query = "Maple SLA", ..., include_unchecked = NULL){
-  betydb_query(search = query, table = "search", include_unchecked = include_unchecked, ...)
+betydb_search <- function(query = "Maple SLA", ...){
+  betydb_query(search = query, table = "search", ...)
 }
 
 betydb_GET <- function(url, args = list(), key = NULL, user = NULL, pwd = NULL, which, ...){
