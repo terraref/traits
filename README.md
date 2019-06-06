@@ -10,13 +10,15 @@ traits
 
 R client for various sources of species trait data.
 
+What is a trait? A "trait" for the purposes of this package is broadly defined as an aspect of a species that can be described or measured, such as physical traits (size, length, height, color), behavioral traits (running speed, etc.), and even variables that make up the niche of the species (e.g., habitat).
+
 Included in `traits` with the associated function prefix or function name:
 
 * [BETYdb](http://www.betydb.org) - `betydb_`
 * [National Center for Biotechnology Information - NCBI](http://www.ncbi.nlm.nih.gov/) - `ncbi_`
 * [Encyclopedia of Life Traitbank](http://eol.org/info/516) - `traitbank_`
 * [Coral Traits Database](http://coraltraits.org/) - `coral_`
-* [Birdlife International](http://rbg-web2.rbge.org.uk/FE/fe.html) - `birdlife_`
+* [Birdlife International](https://www.birdlife.org/) - `birdlife_`
 * LEDA Traitbase - `leda_`
 * USDA Plants Database - `tr_usda`
 * Zanne et al. plant dataset - `tr_zanne`
@@ -216,7 +218,7 @@ birdlife_habitat(22721692)
 * Please [report any issues or bugs](https://github.com/ropensci/traits/issues).
 * License: MIT
 * Get citation information for `traits` in R doing `citation(package = 'traits')`
-* Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md).
+* Please note that this project is released with a [Contributor Code of Conduct](https://github.com/ropensci/traits/blob/master/CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms.
 
 [![ropensci_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
