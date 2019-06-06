@@ -312,50 +312,6 @@ betydb_http <- function(url, args = list(), key = NULL, user = NULL, pwd = NULL,
   return(ans)
 }
 
-#################### by ID
-
-#' Get details about a single item from a table
-#' @export
-#' @rdname betydb
-#' @param table (character) Name of the database table with which this ID is associated.
-betydb_record <- function(id, table, api_version = NULL, betyurl = NULL, fmt = NULL, key = NULL, user = NULL, pwd = NULL, ...){
-  args = list(...)
-  betydb_GET(makeurl(table, id, fmt, api_version, betyurl), args, which = makepropname(table, api_version))
-}
-
-#' @export
-#' @rdname betydb
-betydb_trait <- function(id, genus = NULL, species = NULL, api_version = NULL, betyurl = NULL, fmt = "json", key = NULL, user = NULL, pwd = NULL, ...){
-  args <- traitsc(list(species.genus = genus, species.species = species))
-  betydb_GET(makeurl("variables", id, fmt, api_version, betyurl), args, key, user, pwd, "variable", ...)
-}
-
-#' @export
-#' @rdname betydb
-betydb_specie <- function(id, genus = NULL, species = NULL, api_version = NULL, betyurl = NULL, fmt = "json", key = NULL, user = NULL, pwd = NULL, ...){
-  args <- traitsc(list(genus = genus, species = species))
-  betydb_GET(makeurl("species", id, fmt, api_version, betyurl), args, key, user, pwd, "specie", ...)
-}
-
-#' @export
-#' @rdname betydb
-betydb_citation <- function(id, genus = NULL, species = NULL, api_version = NULL, betyurl = NULL, fmt = "json", key = NULL, user = NULL, pwd = NULL, ...){
-  args <- traitsc(list(genus = genus, species = species))
-  betydb_GET(makeurl("citations", id, fmt, api_version, betyurl), args, key, user, pwd, "citation", ...)
-}
-
-#' @export
-#' @rdname betydb
-betydb_site <- function(id, api_version = NULL, betyurl = NULL, fmt = "json", key = NULL, user = NULL, pwd = NULL, ...){
-  betydb_GET(makeurl("sites", id, fmt, api_version, betyurl), args = NULL, key, user, pwd, "site", ...)
-}
-
-#' @export
-#' @rdname betydb
-betydb_experiment <- function(id, api_version = NULL, betyurl = NULL, fmt = "json", key = NULL, user = NULL, pwd = NULL, ...){
-  betydb_GET(makeurl("experiments", id, fmt, api_version, betyurl), args = NULL, key, user, pwd, "experiment", ...)
-}
-
 betydb_auth <- function(user,pwd,key){
   if (is.null(key) && is.null(user)) {
     key <- getOption("betydb_key", NULL)
@@ -379,18 +335,3 @@ betydb_auth <- function(user,pwd,key){
 }
 
 warn <- "Supply either api key, or user name/password combo"
-
-
-# functions that dont work ------------------------------
-## betydb_traits
-# betydb_traits <- function(genus = NULL, species = NULL, trait = NULL, author = NULL, fmt = "json", key = NULL, user = NULL, pwd = NULL, ...){
-#   args <- traitsc(list(species.genus = genus, species.species = species, variables.name = trait))
-#   url <- makeurl("traits", fmt)
-#   betydb_GET(url = url, args, key, user, pwd, "trait", ...)
-# }
-
-## betydb_yield
-# betydb_yield <- function(id, genus = NULL, species = NULL, fmt = "json", key = NULL, user = NULL, pwd = NULL, ...){
-#   args <- traitsc(list(genus = genus, species = species))
-#   betydb_GET2(makeurl("yields", id, fmt), args, key, user, pwd, "yield", ...)
-# }
