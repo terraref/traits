@@ -1,11 +1,5 @@
 context("BETYdb tests")
 
-test_that("Broken Function", {
-  skip_on_cran()
-
-  expect_error(betydb_traits(genus = "Miscanthus", author = "Arundale", trait = "yield"))
-})
-
 test_that("BETYdb v0 API works", {
   skip_on_cran()
   check_betydb()
@@ -22,13 +16,13 @@ test_that("BETYdb v0 API works", {
   expect_match(get.out$url, betyurl)
 })
 
-test_that("BETYdb beta API works", {
+test_that("BETYdb v1 API works", {
   skip_on_cran()
   check_betydb()
 
   betyurl <- "https://www.betydb.org/"
-  priors_url <- makeurl("priors", fmt = "json", betyurl = betyurl, api_version = "beta")
-  expect_equal(priors_url, paste0(betyurl, "api/beta/priors.json"))
+  priors_url <- makeurl("priors", fmt = "json", betyurl = betyurl, api_version = "v1")
+  expect_equal(priors_url, paste0(betyurl, "api/v1/priors.json"))
 
   get.out <- GET(paste0(priors_url, "/?key=eI6TMmBl3IAb7v4ToWYzR0nZYY07shLiCikvT6Lv")) # Priors is a small table
   expect_is(get.out, "response")
@@ -42,7 +36,7 @@ test_that("table to property name matching works", {
 
   getprop <- function(name){
     txt <- betydb_http(
-      makeurl(name, fmt = "json", betyurl = "https://www.betydb.org/", api_version = "beta"),
+      makeurl(name, fmt = "json", betyurl = "https://www.betydb.org/", api_version = "v1"),
       args = list(limit = 1),
       key = NULL,
       user = NULL,
@@ -50,7 +44,7 @@ test_that("table to property name matching works", {
     names(jsonlite::fromJSON(txt, simplifyVector = TRUE, flatten = FALSE)$data)[[1]]
   }
   tablenames <- c("search", "species", "entities", "citations", "pfts")
-  expected_propnames <- sapply(tablenames, makepropname, api_version = "beta")
+  expected_propnames <- sapply(tablenames, makepropname, api_version = "v1")
   got_propnames <- sapply(tablenames, getprop)
 
   expect_equal(got_propnames, expected_propnames)
@@ -80,7 +74,7 @@ test_that("Credentials work", {
   # FIXME - should use v0 API for symmetry w/ other calls,
   # but v0 skips auth for search table
   options(betydb_key = 'NOT A KEY')
-  expect_error(betydb_search("Acer rubrum", api_version = "beta"), "Unauthorized")
+  expect_error(betydb_search("Acer rubrum", api_version = "v1"), "Unauthorized")
   options(betydb_key = "eI6TMmBl3IAb7v4ToWYzR0nZYY07shLiCikvT6Lv")
   optkey <- betydb_search('Acer rubrum')
   expect_equal(optkey$id, key$id)
@@ -103,7 +97,7 @@ test_that("URL & version options work", {
     betydb_api_version = "v0")
   opt1 <- betydb_query(author = "Arundale", table = "citations")
 
-  options(betydb_url = "http://example.com/", betydb_api_version = "beta")
+  options(betydb_url = "http://example.com/", betydb_api_version = "v1")
   expect_error(betydb_query(author = "Arundale", table = "citations"), "Not Found")
   opt2 <- betydb_query(author = "Arundale", table = "citations",
     betyurl = "https://www.betydb.org/")
@@ -136,7 +130,7 @@ test_that("paging works with betydb query and search functions",{
   on.exit(reset_opts(opts))
   options(
     betydb_url = "https://www.betydb.org/",
-    betydb_api_version = "beta",
+    betydb_api_version = "v1",
     betydb_key = "eI6TMmBl3IAb7v4ToWYzR0nZYY07shLiCikvT6Lv",
     per_call_limit = 10, # check paging without a 5000-item request
     warn=-1 ## suppress warnings that we did not get all data
@@ -161,63 +155,14 @@ test_that("paging works with betydb query and search functions",{
 
 })
 
-test_that("betydb_record works", {
-  skip_on_cran()
-  check_betydb()
-
-  rec <- betydb_record(id = 10, table = "traits")
-  expect_is(rec, "list")
-  expect_is(rec$id, "integer")
-  expect_equal(rec$id, 10)
-})
-
-test_that("betydb_trait works", {
-  skip_on_cran()
-  check_betydb()
-
-  aa <- betydb_trait(id = 10)
-  expect_is(aa, "list")
-  expect_is(aa$id, "integer")
-  expect_equal(aa$id, 10)
-})
-
-test_that("betydb_specie works", {
-  skip_on_cran()
-  check_betydb()
-
-  bb <- betydb_specie(id = 1)
-  expect_is(bb, "list")
-  expect_is(bb$id, "integer")
-  expect_equal(bb$id, 1)
-})
-
-test_that("betydb_citation works", {
-  skip_on_cran()
-  check_betydb()
-
-  cc <- betydb_citation(id = 1)
-  expect_is(cc, "list")
-  expect_is(cc$id, "integer")
-  expect_equal(cc$id, 1)
-})
-
-test_that("betydb_site works", {
-  skip_on_cran()
-  check_betydb()
-
-  dd <- betydb_site(id = 795)
-  expect_is(dd, "list")
-  expect_is(dd$city, "character")
-})
-
 test_that("include_unchecked works", {
   skip_on_cran()
   check_betydb()
 
-  q1 <- betydb_search(query = "maple SLA")
-  q2 <- betydb_search(query = "maple SLA", include_unchecked = TRUE)
+  q1 <- betydb_search(query = "switchgrass SLA")
+  q2 <- betydb_search(query = "switchgrass SLA", include_unchecked = TRUE)
 
-  expect_gt(nrow(q2), nrow(q1))
+  expect_gte(nrow(q2), nrow(q1))
   expect_true(all(q1$id %in% q2$id))
 })
 
